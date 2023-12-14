@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <meta charset="UTF-8">
+    <title>Характеристики оборудования</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Характеристики оборудования</h1>
+        {% if cat_slug %}
+            <p>Цех {{ cat_slug }}</p>
+        {% endif %}
+        <a class="btn btn-primary" href="{% url 'add_data' %}" role="button">Добавить оборудование</a>
+        <p> </p>
+        <table>
+            <tr>
+                <th>Инв. №</th>
+                <th>Наименование оборудования</th>
+                <th>Цех</th>
+                <th>Дата ввода в эксплуатацию</th>
+                <th>Изготовитель</th>
+                <th>Заводской номер</th>
+                <th>Дата изготовления</th>
+                <th>Характеристики оборудования</th>
+                <th>Фото оборудования</th>
+            </tr>
+            {% for mashin in MashinsList %}
+             <tr>
+                 <th>{{ mashin.number }}</th>
+                 <td>{{ mashin.name_mashine }}</td>
+                 <td>{{ mashin.ceh }}</td>
+                 <td>{{ mashin.register_date }}</td>
+                 <td>{{ mashin.manufacturer }}</td>
+                 <td>{{ mashin.number_plant }}</td>
+                 <td>{{ mashin.build_date }}</td>
+                 <td>{{ mashin.characteristics }}</td>
+                 <td><a href="{{MEDIA_URL}}{{ mashin.photo }}">{{ mashin.photo }}</a></td>
+                 {% if mashin.status == 'NO' %}
+                 <td><<button><a href = '/update/{{mashin.pk}}/data' class = 'class="btn text-secondary px-0'>Изменить
+                    </a></button></td>
+                 {% endif %}
+             </tr>
+            {% endfor %}
+        </table>
+{% endblock %}
+
+
+
+
+
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Характеристики оборудования</title>#}
+{#        <a href="{% url 'data' %}">Характеристики </a>|<a href="{% url 'problems' %}"> Неполадки </a>|<a href="{% url 'dto' %}"> ДТО</a>#}
+{#        <style>#}
+{#            TABLE {#}
+{#                width: 1500px; /* Ширина таблицы */#}
+{#                border-collapse: collapse; /* Убираем двойные линии между ячейками */#}
+{#            }#}
+{#            TD, TH {#}
+{#                padding: 3px; /* Поля вокруг содержимого таблицы */#}
+{#                border: 1px solid black; /* Параметры рамки */#}
+{#            }#}
+{#            TH {#}
+{#                background: #b0e0e6; /* Цвет фона */#}
+{#            }#}
+{#        </style>#}
+{#</head>#}
+{#    <body>#}
+{#        <h1>Характеристики оборудования</h1>#}
+{#        {% if cat_slug %}#}
+{#            <p>Цех {{ cat_slug }}</p>#}
+{#        {% endif %}#}
+{#        <table>#}
+{#            <tr>#}
+{#                <th>Инв. №</th>#}
+{#                <th>Наименование оборудования</th>#}
+{#                <th>Цех</th>#}
+{#                <th>Дата ввода в эксплуатацию</th>#}
+{#                <th>Изготовитель</th>#}
+{#                <th>Заводской номер</th>#}
+{#                <th>Дата изготовления</th>#}
+{#                <th>Характеристики оборудования</th>#}
+{#                <th>Фото оборудования</th>#}
+{#            </tr>#}
+{#            {% for mashin in MashinsList %}#}
+{#             <tr>#}
+{#                <th>{{ mashin.number }}</th>#}
+{#                <td>{{ mashin.name_mashine }}</td>#}
+{#                <td>{{ mashin.ceh }}</td>#}
+{#                <td>{{ mashin.register_date }}</td>#}
+{#                <td>{{ mashin.manufacturer }}</td>#}
+{#                <td>{{ mashin.number_plant }}</td>#}
+{#                <td>{{ mashin.build_date }}</td>#}
+{#                <td>{{ mashin.characteristics }}</td>#}
+{#                <td>{{ mashin.photo }}</td>#}
+{#             </tr>#}
+{#            {% endfor %}#}
+{#        </table>#}
+{#    </body>#}
+{#</html>{##}

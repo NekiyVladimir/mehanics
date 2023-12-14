@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <meta charset="UTF-8">
+    <title>Неполадки</title>
+{% endblock %}
+
+{% block content %}
+        <h1>Неполадки оборудования</h1>
+        {% if cat_slug %}
+            <p>Цех {{ cat_slug }}</p>
+        {% else %}
+            <p>Здесь показаны неполадки оборудования всех цехов</p>
+        {% endif %}
+        <a class="btn btn-primary" href="{% url 'add_problems' %}" role="button">Добавить неполадку</a>
+        <p> </p>
+         <table>
+            <tr>
+                <th>Инв. №</th>
+                <th>Наименование оборудования</th>
+                <th>Цех</th>
+                <th>Дата выявления неполадки</th>
+                <th>Описание неполадки</th>
+                <th>Фото неполадки</th>
+                <th>Выполненые работы</th>
+                <th>Запчасти</th>
+                <th>Статус</th>
+                <th>Дата устранения неполадки</th>
+                <th>Отвественный</th>
+                <th>Комментарий</th>
+            </tr>
+            {% for problem in Problems %}
+             <tr>
+                <th>{{ problem.number }}</th>
+                <td>{{ problem.name_mashine }}</td>
+                <td>{{ problem.ceh }}</td>
+                <td>{{ problem.start_date }}</td>
+                <td>{{ problem.description }}</td>
+                <td><a href="{{MEDIA_URL}}{{ problem.photo_problem }}">{{ problem.photo_problem }}</a></td>
+                <td>{{ problem.comp_work }}</td>
+                <td>{{ problem.spare_parts }}</td>
+                <td>{{ problem.status }}</td>
+                <td>{{ problem.finish_date }}</td>
+                <td>{{ problem.responsible }}</td>
+                <td>{{ problem.comment }}</td>
+                 {% if problem.status == 'NO' %}
+                    <td><<button><a href = '/update/{{problem.pk}}/problems' class = 'class="btn text-secondary px-0'>
+                    Изменить</a></button></td>
+                 {% endif %}
+             </tr>
+            {% endfor %}
+         </table>
+{% endblock %}

@@ -1,0 +1,85 @@
+<!doctype  html>
+<html  lang="en">
+<head>
+<link  rel="stylesheet"  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"  crossorigin="anonymous">
+<title>Авторизация пользователя</title>
+</head>
+<body>
+  <div class="container">
+    <div  class="row justify-content-center">
+      <div  class="col-4">
+      <h1  class="text-center">Добро пожаловать!</h1>
+
+    <h4 class="text-center">Войдите в свой аккаунт!</h4>
+{#<h4 class="card-title">Войдите в свой аккаунт!</h4>#}
+
+<form method="post">
+{% csrf_token %}
+
+    <div class="form-error">{{ form.non_field_errors }}</div>
+    {% for f in form %}
+        <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label> {{ f }}</p>
+    <div class="form-error">{{ f.errors }}</div>
+    {% endfor %}
+
+<button type="submit" class="btn btn-primary btn-block">Войти</button>
+</form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#{% extends "base.html" %}#}
+{##}
+{#{% block content %}#}
+{##}
+{#{% if form.errors %}#}
+{#  <p>Your username and password didn't match. Please try again.</p>#}
+{#{% endif %}#}
+{##}
+{#{% if next %}#}
+{#  {% if user.is_authenticated %}#}
+{#    <p>Your account doesn't have access to this page. To proceed,#}
+{#    please login with an account that has access.</p>#}
+{#  {% else %}#}
+{#    <p>Please login to see this page.</p>#}
+{#  {% endif %}#}
+{#{% endif %}#}
+{##}
+{#<form method="post" action="{% url 'login' %}">#}
+{#{% csrf_token %}#}
+{#<table class="table_login">#}
+{##}
+{#<tr>#}
+{#  <td>{{ form.username.label_tag }}</td>#}
+{#  <td>{{ form.username }}</td>#}
+{#</tr>#}
+{##}
+{#<tr>#}
+{#  <td>{{ form.password.label_tag }}</td>#}
+{#  <td>{{ form.password }}</td>#}
+{#</tr>#}
+{#</table>#}
+{##}
+{#<input type="submit" value="login" />#}
+{#<input type="hidden" name="next" value="{{ next }}" />#}
+{#</form>#}
+{##}
+{#{% endblock %}#}

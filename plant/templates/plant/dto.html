@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <meta charset="UTF-8">
+    <title>ДТО</title>
+{% endblock %}
+
+{% block content %}
+        <h1>Карты Диагноста-технического обслуживания</h1>
+        {% if cat_slug %}
+            <p>Цех {{ cat_slug }}</p>
+        {% else %}
+            <p>Здесь показана информация цехов об проведении диагноста-технического обслуживания</p>
+        {% endif %}
+        <a class="btn btn-primary" href="{% url 'add_dto' %}" type="button">Добавить карту ДТО</a>
+        <p> </p>
+        <table>
+            <tr>
+                <th>Инв. №</th>
+                <th>Наименование оборудования</th>
+                <th>Цех</th>
+                <th>Дата проведения ДТО</th>
+                <th>Скан документа</th>
+                <th>Ответственный</th>
+                <th>Комментарий</th>
+            </tr>
+            {% for dto in DTO %}
+             <tr>
+                <th>{{ dto.number }}</th>
+                <td>{{ dto.name_mashine }}</td>
+                <td>{{ dto.ceh }}</td>
+                <td>{{ dto.start_date }}</td>
+                <td><a href="{{MEDIA_URL}}{{ dto.document }}">{{ dto.document }}</a></td>
+                <td>{{ dto.responsible }}</td>
+                <td>{{ dto.comment }}</td>
+                 {% if dto.status == 'NO' %}
+                    <td><<button><a href = '/update/{{dto.pk}}/dto' class = 'class="btn text-secondary px-0'>Изменить
+                    </a></button></td>
+                 {% endif %}
+             </tr>
+            {% endfor %}
+         </table>
+{% endblock %}
