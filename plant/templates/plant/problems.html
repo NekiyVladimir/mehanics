@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <meta charset="UTF-8">
+    <title>Неполадки</title>
+{% endblock %}
+
+{% block content %}
+    <div class="block-title">
+        <h1>Неполадки оборудования</h1>
+        {% if cat_slug != 'Все цеха'  %}
+            <p>Представлена информация цех {{ cat_slug }}</p>
+        {% else %}
+            <p>Представлены неполадки оборудования всех цехов</p>
+        {% endif %}
+    </div>
+    <div style="margin-bottom: 5px;">
+        <a class="btn btn-primary" href="{% url 'add_problems' %}" role="button">Добавить неполадку</a>
+    </div>
+    <div style="margin-bottom: 5px;">
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if number == 'Null' %}
+                <input type="text" size="5" placeholder="Инв. №" name="number">
+            {% else %}
+                <input type="text" size="5" value="{{ number }}" name="number">
+            {% endif %}
+            {% if name_mashine == 'Null' or name_mashine == ' ' %}
+                <input type="text"  size="25" placeholder="Наименование оборудования" name="name_mashine">
+            {% else %}
+                <input type="text"  size="25" value="{{ name_mashine }}" name="name_mashine">
+            {% endif %}
+            {% if cat == 1 %}
+                {% if workgroup == 'Null' %}
+                    <input type="text"  size="5" placeholder="Цех" name="workgroup">
+                {% else %}
+                    <input type="text"  size="5" value="{{ workgroup }}" name="workgroup">
+                {% endif %}
+                {% if num_date == '0' %}
+                    <input type="text"  size="20" placeholder="Формат '2024-05-22'" name="num_date">
+                {% else %}
+                    <input type="text"  size="20" value="{{ num_date }}" name="num_date">
+                {% endif %}
+            {% endif %}
+            {% if parts == 'Null' %}
+                <input type="text"  size="25" placeholder="Запчасти" name="parts">
+            {% else %}
+                <input type="text"  size="25" value="{{ parts }}" name="parts">
+            {% endif %}
+            <button>Поиск</button>
+        </form>
+    </div>
+         <table>
+            <tr>
+                <th style="width: 70px;">Инв. №</th>
+                <th style="width: 250px;">Наименование оборудования</th>
+                <th style="width: 40px;">Цех</th>
+                <th style="width: 70px;">Дата выяв.</th>
+                <th style="width: 350px;">Описание неполадки</th>
+                <th>Фото</th>
+                <th>Выполненые работы</th>
+                <th style="width: 140px;">Запчасти</th>
+                <th style="width: 70px;">Дата устр.</th>
+                <th>Контроль</th>
+                <th>Комментарий</th>
+                <th>Ред.</th>
+            </tr>
+            {% for problem in Problems %}
+             <tr>
+                <th><button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                             data-bs-number="{{ problem.number }}" data-bs-name="{{ problem.name_mashine }}"
+                          data-bs-description="{{ problem.description }}" data-bs-comp_work="{{ problem.comp_work }}"
+                     data-bs-spare_parts="{{ problem.spare_parts }}"><strong>{{ problem.number }}</strong></button>
+                </th>
+                <td>{{ problem.name_mashine|truncatechars:50 }}</td>
+                <td>{{ problem.ceh }}</td>
+                <td>{{ problem.start_date|date:"j.m.y" }}</td>
+                <td>{{ problem.description|truncatechars:80 }}</td>
+                {% if problem.photo_problem %}
+                    <td><a href="{{MEDIA_URL}}{{ problem.photo_problem }}" target="_blank">Фото</a></td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td>{{ problem.comp_work|truncatechars:60 }}</td>
+                <td>{{ problem.spare_parts|truncatechars:35 }}</td>
+                <td>{{ problem.finish_date|date:"j.m.y" }}</td>
+                <td>{{ problem.responsible }}</td>
+                <td style="color: #ff0000;"><strong>{{ problem.comment }}</strong></td>
+                {% if  cat == 1 and problem.status == 'OK' %}
+                     <td><a href = '/update/{{problem.pk}}/problemsuser'><img src="../collection/icons/yes.jpg"
+                                              alt="Принято" title="Цех работу сдал!" width="30" height="30"></a></td>
+                {% elif  cat == 1 and problem.status == 'NO' %}
+                     <td><a href = '/update/{{problem.pk}}/problemsuser'><img src="../collection/icons/no.jpg"
+                                              alt="Принято" title="Цех работу не сдал!" width="30" height="30"></a></td>
+                {% elif problem.status == 'NO' %}
+                     <td><a href = '/update/{{problem.pk}}/problems'><img src="../collection/icons/no.jpg"
+                                     alt="Требует доработок" title="Требует доработок!" width="30" height="30"></a></td>
+                {% else %}
+                     <td><img src="../collection/icons/yes.jpg" alt="Принято!" title="Принято!" width="30"
+                              height="30"></td>
+                {% endif %}
+             </tr>
+            {% endfor %}
+         </table><br>
+           <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Тестовый режим</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+           <p>Нет данных</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script>
+        const exampleModal = document.getElementById('exampleModal')
+if (exampleModal) {
+  exampleModal.addEventListener('show.bs.modal', event => {
+    // Button that triggered the modal
+    const button = event.relatedTarget
+    // Extract info from data-bs-* attributes
+    const name = button.getAttribute('data-bs-name')
+    const number = button.getAttribute('data-bs-number')
+    const description = button.getAttribute('data-bs-description')
+    const comp_work = button.getAttribute('data-bs-comp_work')
+    const spare_parts = button.getAttribute('data-bs-spare_parts')
+    // If necessary, you could initiate an Ajax request here
+    // and then do the updating in a callback.
+
+    // Update the modal's content.
+    const modalTitle = exampleModal.querySelector('.modal-title')
+
+    const modalBodyP = exampleModal.querySelector('.modal-body p')
+
+    modalTitle.innerHTML = '<strong>Наименование оборудования:</strong> ' + name
+    modalBodyP.innerHTML = '<strong>Инвентарный номер:</strong> ' + number + '<br><br><strong>Описание неполадки:' +
+        '</strong> ' + description + '<br><br><strong>Выполненые работы:</strong> ' + comp_work +
+        '<br><br><strong>Примененные запчасти:</strong> ' + spare_parts
+
+  })
+}
+    </script>
+{% endblock %}

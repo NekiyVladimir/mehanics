@@ -1,0 +1,51 @@
+/*.btn-body {*/
+/*    padding: 0.5em 1.5em; !* Поля по вертикали и горизонтали *!*/
+/*    background-color: transparent; !* Прозрачный цвет фона *!*/
+/*    font-size: 0.9em; !* Размер текста *!*/
+/*    text-transform: uppercase; !* Все буквы заглавные *!*/
+/*    color: #2196f3; !* Цвет текста *!*/
+/*    border: 2px solid #2196f3; !* Параметры рамки *!*/
+/*    border-radius: 0.4em; !* Радиус скругления *!*/
+/*}*/
+
+table {
+    width: 100%; /* Ширина таблицы */
+    border-collapse: collapse; /* Убираем двойные линии между ячейками */
+}
+td, th {
+    padding: 3px; /* Поля вокруг содержимого таблицы */
+    border: 1px solid black; /* Параметры рамки */
+}
+th {
+    background: #b0e0e6; /* Цвет фона */
+}
+.sidebar-nav {
+  margin-top: 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.size-month {
+    width: 30px;
+}
+
+.block-title {
+    text-align: center;
+    /*width: 850px;*/
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+}
+
+.block-add {
+    width: 200px;
+}
+
+.add-button {
+
+    padding: 10px 30px 10px 20px;
+}
+
+.news {
+    margin-left: 10px;
+}
+

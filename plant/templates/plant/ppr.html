@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <meta charset="UTF-8">
+    <title>ТОиР</title>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <div class="block-title">
+        {% if cat_slug != 'Все цеха' %}
+            <h1>Годовой график ТОиР цехa {{ cat_slug }} за {{ year }} год</h1>
+        {% else %}
+            <h1>Годовой график ТОиР всех цехов за {{ year }} год</h1>
+        {% endif %}
+        </div>
+
+{#<!-- Кнопка-триггер модального окна -->#}
+{#<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">#}
+{#  Запустить модальное окно со статическим фоном#}
+{#</button>#}
+{##}
+{#<!-- Модальное окно -->#}
+{#<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">#}
+{#  <div class="modal-dialog">#}
+{#    <div class="modal-content">#}
+{#      <div class="modal-header">#}
+{#        <h5 class="modal-title" id="staticBackdropLabel">Заголовок модального окна</h5>#}
+{#        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>#}
+{#      </div>#}
+{#      <div class="modal-body">#}
+{#        ...#}
+{#      </div>#}
+{#      <div class="modal-footer">#}
+{#        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>#}
+{#        <button type="button" class="btn btn-primary">Понял</button>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#</div>#}
+
+
+        <div style="margin-bottom: 5px; margin-top: 40px;">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if cat %}
+                    <input type="text"  size="5" placeholder="Цех" name="workgroup">
+                {% endif %}
+                    <input type="number" size="5" required placeholder="Год" name="year">
+                <button>Поиск</button>
+            </form>
+        </div>
+        <table>
+            <tr>
+                <th style="width: 60px;" rowspan="2">Инв. №</th>
+                <th style="width: 600px;" rowspan="2">Наименование оборудования</th>
+                <th style="width: 40px;" rowspan="2">Карта ТОиР</th>
+                <th style="width: 40px;" rowspan="2">Цех</th>
+                <th style="width: 165px;" rowspan="2">Периодичность ТОиР</th>
+                <th style="width: 40px;" rowspan="2">Последнее ТОиР</th>
+                <th colspan="12">Дата планируемого ТОиР оборудования</th>
+            </tr>
+            <tr>
+                <th class="size-month">1</th>
+                <th class="size-month">2</th>
+                <th class="size-month">3</th>
+                <th class="size-month">4</th>
+                <th class="size-month">5</th>
+                <th class="size-month">6</th>
+                <th class="size-month">7</th>
+                <th class="size-month">8</th>
+                <th class="size-month">9</th>
+                <th class="size-month">10</th>
+                <th class="size-month">11</th>
+                <th class="size-month">12</th>
+            </tr>
+            {% for mashin in MashinsList %}
+             <tr>
+                <th>{{ mashin.number }}</th>
+                <td>{{ mashin.name_mashine }}</td>
+                {% if mashin.form %}
+                <td align="center"><a href="{{MEDIA_URL}}{{ mashin.form }}" target="_blank">Бланк</a></td>
+                {% else %}
+                <td align="center">-</td>
+                {% endif %}
+                <td align="center">{{ mashin.ceh }}</td>
+                <td align="center">1 раз в {{ mashin.to }} месяца(ев)</td>
+                <td align="center">{{ mashin.register_date|date:"m.Y" }}</td>
+                {% for k,v in ppr_dict.items %}
+                    {% if k == mashin.number %}
+                        <td align="center">{% if 1 in v %}+{% endif %}</td>
+                        <td align="center">{% if 2 in v %}+{% endif %}</td>
+                        <td align="center">{% if 3 in v %}+{% endif %}</td>
+                        <td align="center">{% if 4 in v %}+{% endif %}</td>
+                        <td align="center">{% if 5 in v %}+{% endif %}</td>
+                        <td align="center">{% if 6 in v %}+{% endif %}</td>
+                        <td align="center">{% if 7 in v %}+{% endif %}</td>
+                        <td align="center">{% if 8 in v %}+{% endif %}</td>
+                        <td align="center">{% if 9 in v %}+{% endif %}</td>
+                        <td align="center">{% if 10 in v %}+{% endif %}</td>
+                        <td align="center">{% if 11 in v %}+{% endif %}</td>
+                        <td align="center">{% if 12 in v %}+{% endif %}</td>
+                    {% endif %}
+                {% endfor %}
+             </tr>
+            {% endfor %}
+         </table><br>
+    </div>
+
+{% endblock %}

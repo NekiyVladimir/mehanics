@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <meta charset="UTF-8">
+    <title>Карты ТОиР</title>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <div class="block-title">
+        <h1>Карты ТОиР (технического обслуживания и ремонта)</h1>
+        {% if cat_slug != 'Все цеха' %}
+            <p>Представлена информация об проведении ТОиР в цехе {{ cat_slug }}</p>
+        {% else %}
+            <p>Представлена информация всех цехов об проведении ТОиР</p>
+        {% endif %}
+        </div>
+        <div style="margin-bottom: 5px">
+            {% if cat == 1 %}
+                <a class="btn btn-primary" href="{% url 'add_dto' %}" type="button">Добавить карту ТОиР</a>
+            {% endif %}
+        </div>
+        <div style="margin-bottom: 5px">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if number == 'Null' %}
+                    <input type="text" size="5" placeholder="Инв. №" name="number">
+                {% else %}
+                    <input type="text" size="5" value="{{ number }}" name="number">
+                {% endif %}
+                {% if name_mashine == 'Null' %}
+                    <input type="text"  size="25" placeholder="Наименование оборудования" name="name_mashine">
+                {% else %}
+                    <input type="text"  size="25" value="{{ name_mashine }}" name="name_mashine">
+                {% endif %}
+                {% if workgroup == 'Null' %}
+                    <input type="text"  size="5" placeholder="Цех" name="workgroup">
+                {% else %}
+                    <input type="text"  size="5" value="{{ workgroup }}" name="workgroup">
+                {% endif %}
+                <button>Поиск</button>
+            </form>
+        </div>
+        <table>
+            <tr>
+                <th style="width: 70px;">Инв. №</th>
+                <th style="width: 600px;">Наименование оборудования</th>
+                <th style="width: 40px;">Цех</th>
+                <th>C...</th>
+                <th>По...</th>
+                <th>ТО</th>
+                <th>Документ</th>
+                <th>Ответственный</th>
+                <th style="width: 250px;">Комментарий</th>
+                <th>Ред.</th>
+            </tr>
+            {% for dto in DTO %}
+             <tr>
+                <th>{{ dto.number }}</th>
+                <td>{{ dto.name_mashine }}</td>
+                <td>{{ dto.ceh }}</td>
+                <td>{{ dto.start_date|date:"j.m.Y" }}</td>
+                <td>{{ dto.finish_date|date:"j.m.Y" }}</td>
+                {% if dto.next_to == 'Да' %}
+                    <td><img src="../collection/icons/green.jpg" alt="Карта ТОиР принята!" title="Карта ТОиР принята!" width="30" height="30"></td>
+                {% elif now < dto.start_date %}
+                    <td><img src="../collection/icons/yellow.jpg" alt="Еще есть время" title="Время не пришло!" width="30" height="30"></td>
+                {% else %}
+                    <td><img src="../collection/icons/red.jpg" alt="Необходимо провести ТОиР" title="Необходимо провести ТОиР!" width="30" height="30"></td>
+                {% endif %}
+                {% if dto.document %}
+                    <td><a href="{{MEDIA_URL}}{{ dto.document }}" target="_blank">Отчет</a></td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td>{{ dto.responsible }}</td>
+                <td style="color: red;"><strong>{{ dto.comment }}</strong></td>
+                {% if  cat == 1 and dto.status == 'OK' %}
+                        <td><a href = '/update/{{dto.pk}}/dtouser'><img src="../collection/icons/yes.jpg" alt="Принято"
+                                                             title="Цех работу сдал!" width="30" height="30"></a></td>
+                {% elif cat == 1 and dto.status == 'NO' %}
+                        <td><a href = '/update/{{dto.pk}}/dtouser'><img src="../collection/icons/no.jpg" alt="Принято"
+                                                             title="Цех работу не сдал!" width="30" height="30"></a></td>
+                {% elif cat != 1 and dto.status == 'NO' %}
+                    <td><a href = '/update/{{dto.pk}}/dto'><img src="../collection/icons/no.jpg" alt="Требует доработок"
+                                                            title="Требует доработок!" width="30" height="30"></a></td>
+                {% else %}
+                     <td><img src="../collection/icons/yes.jpg" alt="Принято!" title="Выполнено!" width="30"
+                              height="30"></td>
+                {% endif %}
+             </tr>
+            {% endfor %}
+         </table><br>
+    </div>
+{% endblock %}

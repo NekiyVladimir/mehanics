@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="text" size="5" placeholder="Инв. №" name="number">
+        <br>
+        <label>
+            <input type="checkbox" name="languages" value="HTML">
+            Хочу изучать HTML
+        </label>
+        <br>
+        <label>
+            <input type="checkbox" name="languages" value="CSS">
+            Хочу изучать CSS
+        </label>
+        <br>
+        <label>
+            <input type="checkbox" name="languages" value="JS">
+            Хочу изучать JS
+        </label>
+        <br>
+        <button>Поиск</button>
+    </form>
+    <p>{{ number }}</p>
+    {% for i in languages %}
+        <p>{{ i }}</p>
+    {% endfor %}
+{#    <p>{{ languages }}</p>#}
+</body>
+</html>
+
+
+

@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <meta charset="UTF-8">
+    <title>Характеристики оборудования</title>
+{% endblock %}
+
+{% block content %}
+    <div class="block-title">
+        <h1>Характеристики оборудования</h1>
+        {% if ceh != 'Null' and ceh != 'Все цеха' %}
+            <p>Представлены характеристики оборудования цеха {{ ceh }}</p>
+        {% else %}
+            <p>Представлены характеристики оборудования всех цехов</p>
+        {% endif %}
+    </div>
+    <div style="margin-bottom: 5px;">
+            <a class="btn btn-primary" href="{% url 'add_data' %}" role="button">Добавить оборудование</a>
+    </div>
+    <div style="margin-bottom: 5px;">
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if number == '' or number == 'Null' %}
+                <input type="text" size="5" placeholder="Инв. №" name="number">
+            {% else %}
+                <input type="text" size="5" value={{ number }} name="number">
+            {% endif %}
+            {% if name_mashine == '' or name_mashine == 'Null' %}
+                <input type="text"  size="25" placeholder="Наименование оборудования" name="name_mashine">
+            {% else %}
+                <input type="text"  size="25" value={{name_mashine}} name="name_mashine">
+            {% endif %}
+            {% if cat_slug == 'Все цеха' %}
+                {% if workgroup == '' or workgroup == 'Null' %}
+                    <input type="text"  size="5" placeholder="Цех" name="workgroup">
+                {% else %}
+                    <input type="text"  size="5" value={{ workgroup }} name="workgroup">
+                {% endif %}
+            {% endif %}
+            <button>Поиск</button>
+        </form>
+    </div>
+
+
+
+        <table>
+            <tr align="center">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% if sort == 'pk' %}
+                        <th><button class="btn" value="number" name="sort"><strong>Инв.</strong></button></th>
+                        <th><button class="btn" value="name_mashine" name="sort"><strong>Наименование оборудования</strong></button></th>
+                        {% if cat_slug == 'Все цеха' %}
+                            <th style="width: 65px;"><button class="btn" value="ceh" name="sort"><strong>Цех</strong></button></th>
+                        {% else %}
+                            <th style="width: 65px;">Цех</th>
+                        {% endif %}
+                    {% elif sort == 'number' %}
+                        <th><strong>Инв.</strong></th>
+                        <th><button class="btn" value="name_mashine" name="sort"><strong>Наименование оборудования</strong></button></th>
+                        {% if cat_slug == 'Все цеха' %}
+                            <th style="width: 65px;"><button class="btn" value="ceh" name="sort"><strong>Цех</strong></button></th>
+                        {% else %}
+                            <th style="width: 65px;">Цех</th>
+                        {% endif %}
+                    {% elif sort == 'name_mashine' %}
+                        <th><button class="btn" value="number" name="sort"><strong>Инв.</strong></button></th>
+                        <th><strong>Наименование оборудования</strong></th>
+                        {% if cat_slug == 'Все цеха' %}
+                            <th style="width: 65px;"><button class="btn" value="ceh" name="sort"><strong>Цех</strong></button></th>
+                        {% else %}
+                            <th style="width: 65px;">Цех</th>
+                        {% endif %}
+                    {% elif sort == 'ceh' %}
+                        <th><button class="btn" value="number" name="sort"><strong>Инв.</strong></button></th>
+                        <th><button class="btn" value="name_mashine" name="sort"><strong>Наименование оборудования</strong></button></th>
+                        <th style="width: 65px;">Цех</th>
+                    {% endif %}
+                </form>
+                <th>Дата ввода</th>
+                <th>Изготовитель</th>
+                <th>Заводской номер</th>
+                <th>Дата изготов.</th>
+                <th>Характеристики оборудования</th>
+                <th>Фото</th>
+                <th>Ред.</th>
+            </tr>
+            {% for mashin in MashinsList %}
+             <tr>
+                 <th>
+                     <button class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                             data-bs-number="{{ mashin.number }}" data-bs-name="{{ mashin.name_mashine }}"
+                          data-bs-charac="{{ mashin.characteristics }}" data-bs-manufacturer="{{ mashin.manufacturer }}"
+                     ><strong>{{ mashin.number}}</strong></button>
+                 </th>
+                 <td>{{ mashin.name_mashine|truncatechars:100 }}</td>
+                 <td align="center">{{ mashin.ceh }}</td>
+                 <td>{{ mashin.register_date|date:"j.m.Y" }}</td>
+                 <td>{{ mashin.manufacturer|truncatechars:28 }}</td>
+                 <td>{{ mashin.number_plant }}</td>
+                 <td>{{ mashin.build_date }}</td>
+                 <td>{{ mashin.characteristics|truncatechars:95 }}</td>
+                 <td>{% if mashin.photo %}<a href="{{MEDIA_URL}}{{ mashin.photo }}" target="_blank">Фото</a><br>
+                     {% endif %}
+                     {% if mashin.nameplate %}<a href="{{MEDIA_URL}}{{ mashin.nameplate }}" target="_blank">Шильд</a>
+                 {% endif %}</td>
+{#                {% if mashin.photo == True and mashin.nameplate == True %}#}
+{#                    <td><a href="{{MEDIA_URL}}{{ mashin.photo }}" target="_blank">Фото</a><br>#}
+{#                    <a href="{{MEDIA_URL}}{{ mashin.nameplate }}" target="_blank">Шильд</a></td>#}
+{#                {% elif mashin.photo %}#}
+{#                    <td><a href="{{MEDIA_URL}}{{ mashin.photo }}" target="_blank">Фото</a></td>#}
+{#                {% elif mashin.nameplate %}#}
+{#                    <td><a href="{{MEDIA_URL}}{{ mashin.nameplate }}" target="_blank">Шильд</a></td>#}
+{#                {% else %}#}
+{#                    <td></td>#}
+{#                {% endif %}#}
+                 {% if mashin.status == 'NO' %}
+                 <td><a href = '/update/{{mashin.pk}}/data'><img src="../collection/icons/no.jpg" alt="Непринято!"
+                                                             title="Требует доработок!" width="30" height="30"></a></td>
+                 {% elif  cat == True %}
+                    <td><a href = '/update/{{mashin.pk}}/data'><img src="../collection/icons/yes.jpg" alt="Принято"
+                                                                    title="Цех работу сдал!" width="30" height="30"></a>
+                    </td>
+                 {% else %}
+                     <td><img src="../collection/icons/yes.jpg" alt="Принято!" title="Принято!" width="30"
+                              height="30"></td>
+                 {% endif %}
+             </tr>
+            {% endfor %}
+        </table><br>
+
+
+
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Тестовый режим</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+           <p> Нет данных</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script>
+        const exampleModal = document.getElementById('exampleModal')
+if (exampleModal) {
+  exampleModal.addEventListener('show.bs.modal', event => {
+    // Button that triggered the modal
+    const button = event.relatedTarget
+    // Extract info from data-bs-* attributes
+    const name = button.getAttribute('data-bs-name')
+    const number = button.getAttribute('data-bs-number')
+    const characharistic = button.getAttribute('data-bs-charac')
+    const manufacturer = button.getAttribute('data-bs-manufacturer')
+    // If necessary, you could initiate an Ajax request here
+    // and then do the updating in a callback.
+
+    // Update the modal's content.
+    const modalTitle = exampleModal.querySelector('.modal-title')
+
+    const modalBodyP = exampleModal.querySelector('.modal-body p')
+
+    modalTitle.innerHTML = '<strong>Наименование оборудования:</strong> ' + name
+    modalBodyP.innerHTML = '<strong>Инвентарный номер:</strong> ' + number + '<br><br><strong>Изготовитель:</strong> '
+        + manufacturer + '<br><br><strong>Характеристики оборудования:</strong> ' + characharistic
+
+  })
+}
+    </script>
+
+
+{% endblock %}
